@@ -13,9 +13,9 @@ class TbuserController extends Controller
 {
     public function authenticate(Request $request)
     {
-        $credentials = $request->only('tuuser', 'tupass');
+        $credentials = $request->only('tuuser', 'password');
 
-        dd(JWTAuth::attempt($credentials));
+        // dd(JWTAuth::attempt($credentials));
 
         try {
             if (! $token = JWTAuth::attempt($credentials)) {

@@ -45,4 +45,8 @@ class Tbuser extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+    public function getAuthPassword() {
+        return $this->tupass;
+    }
 }
