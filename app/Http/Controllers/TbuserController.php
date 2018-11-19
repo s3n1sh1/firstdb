@@ -25,7 +25,7 @@ class TbuserController extends Controller
             return response()->json(['error' => 'could_not_create_token'], 500);
         }
 
-        return response()->json(compact('token'));
+        return response()->json(['token' => "bearer $token"])->header('Authorization', $token);
     }
 
     public function register(Request $request)
@@ -71,6 +71,17 @@ class TbuserController extends Controller
         }
 
         return response()->json(compact('user'));
+    }
+
+    public function refresh()
+    {
+        return response(['status' => 'success']);
+    }
+
+    public function logout()
+    {
+        JWTAuth::invalidate();
+        return response()->json(['message' => 'Successfully logged out']);
     }
 
 }
