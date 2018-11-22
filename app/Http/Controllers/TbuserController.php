@@ -19,13 +19,13 @@ class TbuserController extends Controller
 
         try {
             if (! $token = JWTAuth::attempt($credentials)) {
-                return response()->json(['error' => 'invalid_credentials'], 400);
+                return response()->json(['error' => 'invalid_credentials'], 401);
             }
         } catch (JWTException $e) {
             return response()->json(['error' => 'could_not_create_token'], 500);
         }
 
-        return response()->json(['token' => "bearer $token"])->header('Authorization', $token);
+        return response()->json(['token' => "Bearer $token"])->header('Authorization', $token);
     }
 
     public function register(Request $request)
