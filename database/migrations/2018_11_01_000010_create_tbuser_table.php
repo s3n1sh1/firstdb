@@ -11,6 +11,7 @@ class CreateTbuserTable extends BaseMigration
             $table->char('tuuser',50)->nullable(false)->comment('Username');
             $table->char('tupass',100)->nullable(false)->comment('Password');
             $table->char('tuname',100)->nullable(true)->comment('User Name');
+            $table->decimal('tuiran',24,10)->nullable(true)->comment('Iuran');
 
             $this->defaultColumn('tu', $table);
 
