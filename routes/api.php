@@ -21,14 +21,15 @@ Route::post('register', 'TbuserController@register');
 Route::post('auth/login', 'TbuserController@authenticate');
 Route::get('open', 'DataController@open');
 
-Route::group(['middleware' => ['jwt.verify']], function() {
-    Route::get('user', 'TbuserController@getAuthenticatedUser');
-    Route::get('closed', 'DataController@closed');
-});
+// Route::group(['middleware' => ['jwt.verify']], function() {
+//     Route::get('user', 'TbuserController@getAuthenticatedUser');
+//     Route::get('closed', 'DataController@closed');
+// });
 
 Route::group(['middleware' => ['jwt.auth']], function() {
     Route::get('auth/user', 'TbuserController@getAuthenticatedUser');
     Route::post('auth/logout', 'TbuserController@logout');
+    Route::get('loadUser', 'TbuserController@loadUser');
 });
 
 Route::group(['middleware' => 'jwt.refresh'], function(){

@@ -84,4 +84,16 @@ class TbuserController extends Controller
         return response()->json(['message' => 'Successfully logged out']);
     }
 
+    public function loadUser(Request $request)
+    {
+        $perPage = request()->has('per_page') ? (int) request()->per_page : null;
+        $pagination = Tbuser::paginate($perPage);
+        $pagination->appends([
+            'sort' => request()->sort,
+            'filter' => request()->filter,
+            'per_page' => request()->per_page
+        ]);
+
+        return response()->json($pagination);
+    }
 }
