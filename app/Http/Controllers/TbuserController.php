@@ -96,4 +96,12 @@ class TbuserController extends Controller
 
         return response()->json($pagination);
     }
+
+    public function saveUser(Request $request)
+    {
+        $data = $request->all();
+        var_dump($data);
+
+        return ["message"=>"Personal Created"];
+    }
 }
