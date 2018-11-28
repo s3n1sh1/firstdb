@@ -100,7 +100,8 @@ class TbuserController extends Controller
     public function saveUser(Request $request)
     {
         $data = $request->all();
-        var_dump($data);
+        $currentuser = JWTAuth::user();
+        echo "current user: ".$currentuser->tuuser;
 
         return ["message"=>"Personal Created"];
     }
