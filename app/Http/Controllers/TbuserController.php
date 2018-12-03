@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Tbuser;
+use App\Http\Controllers\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
-class TbuserController extends Controller
+class TbuserController extends BaseController
 {
     public function authenticate(Request $request)
     {
@@ -53,7 +54,7 @@ class TbuserController extends Controller
 
         $token = JWTAuth::fromUser($user);
 
-        return response()->json(compact('user','token'),201);
+        return response()->json(compact('user','token'), 201);
     }
 
     public function getAuthenticatedUser()
@@ -87,7 +88,7 @@ class TbuserController extends Controller
     public function loadUser(Request $request)
     {
         $perPage = request()->has('per_page') ? (int) request()->per_page : null;
-        $pagination = Tbuser::paginate($perPage);
+        $pagination = Tbuser::where('tuuserid', '<>', '1')->paginate($perPage);
         $pagination->appends([
             'sort' => request()->sort,
             'filter' => request()->filter,
@@ -99,10 +100,49 @@ class TbuserController extends Controller
 
     public function saveUser(Request $request)
     {
-        $data = $request->all();
+        $receive = $request->all();
+        $tbuser = get_object_vars($receive['user']);
+        $mode = $receive['mode'];
         $currentuser = JWTAuth::user();
-        echo "current user: ".$currentuser->tuuser;
 
-        return ["message"=>"Personal Created"];
+        if($mode == '1') {
+            $validator = Validator::make($tbuser, [
+                'tuname' => 'required|string|max:100',
+                'tuuser' => 'required|string|max:50|unique:tbuser',
+                'tupass' => 'required|string|min:8|max:100|confirmed',
+            ]);
+
+            if($validator->fails()){
+                return response()->json($validator->errors()->toJson(), 422);
+            }
+        }
+
+        switch ($mode) {
+            case "1":
+                $tbuser['tupass'] = bcrypt($tbuser['tupass']);
+                Tbuser::insert(
+                    $this->fnFieldSyntax (
+                        $tbuser, $currentuser->tuuser, '1', 
+                        ['tuuser','tuname','tupass','tuiran'] 
+                    )
+                );
+                $message = "User Created";
+                break;
+            case "2":
+                Tbuser::where('tuuserid', $tbuser['tuuserid'])->update(
+                    $this->fnFieldSyntax (
+                        $tbuser, $currentuser->tuuser, '2',  
+                        ['tuname','tuiran']
+                    )
+                );
+                $message = "User Updated";
+                break;
+            case "3":
+                Tbuser::where('tuuserid', $tbuser['tuuserid'])->delete();
+                $message = "User Deleted";
+                break;
+        }
+
+        return ["message"=>$message];
     }
 }
