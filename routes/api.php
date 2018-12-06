@@ -32,8 +32,11 @@ Route::group(['middleware' => ['decrypt.data']], function() {
 Route::group(['middleware' => ['jwt.auth','decrypt.data']], function() {
     Route::get('auth/user', 'TbuserController@getAuthenticatedUser');
     Route::post('auth/logout', 'TbuserController@logout');
+
     Route::get('loadUser', 'TbuserController@loadUser');
     Route::post('saveUser', 'TbuserController@saveUser');
+
+    Route::get('loadIuran', 'TbiranController@loadIuran');
 });
 
 Route::group(['middleware' => 'jwt.refresh','decrypt.data'], function(){
