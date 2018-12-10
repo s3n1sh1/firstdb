@@ -11,7 +11,6 @@ class CreateTbiranTable extends BaseMigration
             $table->unsignedInteger('tiuserid')->nullable(false)->comment('User IY');
             $table->char('timont',6)->nullable(false)->comment('Periode Bulan');
             $table->decimal('tiiran',14,2)->nullable(true)->comment('Iuran');
-            $table->char('tistas')->nullable(true)->comment('Status');
 
             $this->defaultColumn('ti', $table);
 

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use Carbon\Carbon;
 
 class TbuserController extends BaseController
 {
@@ -120,10 +121,11 @@ class TbuserController extends BaseController
         switch ($mode) {
             case "1":
                 $tbuser['tupass'] = bcrypt($tbuser['tupass']);
+                $tbuser['tumont'] = Carbon::parse($tbuser['tumont'])->format('Ym');
                 Tbuser::insert(
                     $this->fnFieldSyntax (
                         $tbuser, $currentuser->tuuser, '1', 
-                        ['tuuser','tuname','tupass','tuiran'] 
+                        ['tuuser','tuname','tupass','tumont','tuiran']
                     )
                 );
                 $message = "User Created";
