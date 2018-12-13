@@ -50,18 +50,20 @@ class TbiranController extends BaseController
                 CREATE TEMPORARY TABLE temp_month 
                 AS (
                     select * from (
-                        select '".$currentuser->tuuserid."' as id, '".$year."01' as mnth union
-                        select '".$currentuser->tuuserid."', '".$year."02' union
-                        select '".$currentuser->tuuserid."', '".$year."03' union
-                        select '".$currentuser->tuuserid."', '".$year."04' union
-                        select '".$currentuser->tuuserid."', '".$year."05' union
-                        select '".$currentuser->tuuserid."', '".$year."06' union
-                        select '".$currentuser->tuuserid."', '".$year."07' union
-                        select '".$currentuser->tuuserid."', '".$year."08' union
-                        select '".$currentuser->tuuserid."', '".$year."09' union
-                        select '".$currentuser->tuuserid."', '".$year."10' union
-                        select '".$currentuser->tuuserid."', '".$year."11' union
-                        select '".$currentuser->tuuserid."', '".$year."12'
+                        select '".$currentuser->tuuserid."' as id
+                            , '".$year."01' as mnth
+                            , monthname('".$year."0101') as bln union
+                        select '".$currentuser->tuuserid."', '".$year."02', monthname('".$year."0201') union
+                        select '".$currentuser->tuuserid."', '".$year."03', monthname('".$year."0301') union
+                        select '".$currentuser->tuuserid."', '".$year."04', monthname('".$year."0401') union
+                        select '".$currentuser->tuuserid."', '".$year."05', monthname('".$year."0501') union
+                        select '".$currentuser->tuuserid."', '".$year."06', monthname('".$year."0601') union
+                        select '".$currentuser->tuuserid."', '".$year."07', monthname('".$year."0701') union
+                        select '".$currentuser->tuuserid."', '".$year."08', monthname('".$year."0801') union
+                        select '".$currentuser->tuuserid."', '".$year."09', monthname('".$year."0901') union
+                        select '".$currentuser->tuuserid."', '".$year."10', monthname('".$year."1001') union
+                        select '".$currentuser->tuuserid."', '".$year."11', monthname('".$year."1101') union
+                        select '".$currentuser->tuuserid."', '".$year."12', monthname('".$year."1201')
                     ) temp_month
                 );
             ")
@@ -72,10 +74,12 @@ class TbiranController extends BaseController
         }
 
         $perPage = request()->has('per_page') ? (int) request()->per_page : null;
-        $pagination = Tbiran::rightJoinSub($yearquery, 'temp_month', function($join){
+        $pagination = Tbiran::select('tiiranid','bln',DB::raw('(case when tiiranid is null then tuiran else tiiran end) As iuran'))
+                            ->rightJoinSub($yearquery, 'temp_month', function($join){
                                 $join->on('mnth','=','timont');
-                                $join->where('id','=','tiuserid');
+                                $join->on('id','=','tiuserid');
                             })
+                            ->leftJoin('tbuser', 'tuuserid', '=', 'id')
                             ->paginate($perPage);
         
         $pagination->appends([
