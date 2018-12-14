@@ -147,4 +147,22 @@ class TbuserController extends BaseController
 
         return ["message"=>$message];
     }
+
+    public function changePass(Request $request)
+    {
+        $receive = $request->all();
+        $password = get_object_vars($receive['password']);
+        $currentuser = JWTAuth::user();
+
+        $oldpass = $currentuser->tupass;
+        if($oldpass != bcrypt($password['oldpass'])) {
+            return response()->json(['error' => 'Old password does not match'], 422);
+        }
+
+        Tbuser::where('tuuserid', $currentuser->tuuserid)
+            ->update(['tupass' => bcrypt($password['newpass'])]);
+
+        $message = "Password Changed";
+        return ["message"=>$message];
+    }
 }
