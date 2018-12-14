@@ -33,8 +33,31 @@ class TbiranController extends BaseController
         return response()->json($pagination);
     }
 
+    public function loadSettle(Request $request)
+    {
+        $month = Carbon::parse($request->date)->format('Ym');
+
+        $perPage = request()->has('per_page') ? (int) request()->per_page : null;
+        $pagination = Tbiran::select('tiiranid','tuuser','tuname','tiiran')
+                            ->leftJoin('tbuser', 'tuuserid', '=', 'tiuserid')
+                            ->where('tuuserid', '<>', '1')
+                            ->where('tumont', '=', $month)
+                            ->paginate($perPage);
+        
+        $pagination->appends([
+            'sort' => request()->sort,
+            'filter' => request()->filter,
+            'per_page' => request()->per_page
+        ]);
+
+        return response()->json($pagination);
+    }
+
     public function loadRecord(Request $request)
     {
+
+        DB::enableQueryLog();
+
         $year = Carbon::parse($request->date)->format('Y');
         
         $currentuser = JWTAuth::user();
@@ -80,6 +103,7 @@ class TbiranController extends BaseController
                                 $join->on('id','=','tiuserid');
                             })
                             ->leftJoin('tbuser', 'tuuserid', '=', 'id')
+                            ->whereRaw('mnth >= tumont')
                             ->paginate($perPage);
         
         $pagination->appends([
@@ -87,6 +111,8 @@ class TbiranController extends BaseController
             'filter' => request()->filter,
             'per_page' => request()->per_page
         ]);
+
+        // var_dump(DB::getQueryLog());
 
         return response()->json($pagination);
     }
@@ -111,6 +137,10 @@ class TbiranController extends BaseController
                     );
                 }
                 $message = "Iuran Settled";
+                break;
+            case "3":
+                Tbiran::where('tiiranid', $receive['iuran'])->delete();
+                $message = "Iuran Removed";
                 break;
         }
 
