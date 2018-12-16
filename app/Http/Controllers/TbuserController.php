@@ -89,7 +89,7 @@ class TbuserController extends BaseController
     public function loadUser(Request $request)
     {
         $perPage = request()->has('per_page') ? (int) request()->per_page : null;
-        $pagination = Tbuser::where('tuuserid', '<>', '1')->paginate($perPage);
+        $pagination = Tbuser::whereNotIn('tuuserid', [1, 2])->paginate($perPage);
         $pagination->appends([
             'sort' => request()->sort,
             'filter' => request()->filter,

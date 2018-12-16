@@ -19,7 +19,7 @@ class TbiranController extends BaseController
         $perPage = request()->has('per_page') ? (int) request()->per_page : null;
         $pagination = Tbuser::select('tuuserid as tiuserid','tuuser','tuname','tuiran as tiiran')
                             ->addSelect(DB::raw("'' as timont"))
-                            ->where('tuuserid', '<>', '1')
+                            ->whereNotIn('tuuserid', [1, 2])
                             ->where('tumont', '<=', $month)
                             ->whereNotIn('tuuserid', Tbiran::where('timont', '=', $month)->pluck('tiuserid'))
                             ->paginate($perPage);
@@ -40,8 +40,8 @@ class TbiranController extends BaseController
         $perPage = request()->has('per_page') ? (int) request()->per_page : null;
         $pagination = Tbiran::select('tiiranid','tuuser','tuname','tiiran')
                             ->leftJoin('tbuser', 'tuuserid', '=', 'tiuserid')
-                            ->where('tuuserid', '<>', '1')
-                            ->where('tumont', '=', $month)
+                            ->whereNotIn('tuuserid', [1, 2])
+                            ->where('timont', '=', $month)
                             ->paginate($perPage);
         
         $pagination->appends([
@@ -55,8 +55,7 @@ class TbiranController extends BaseController
 
     public function loadRecord(Request $request)
     {
-
-        DB::enableQueryLog();
+        // DB::enableQueryLog();
 
         $year = Carbon::parse($request->date)->format('Y');
         
