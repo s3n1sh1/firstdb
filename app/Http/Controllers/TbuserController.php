@@ -165,4 +165,17 @@ class TbuserController extends BaseController
         $message = "Password Changed";
         return ["message"=>$message];
     }
+
+    public function resetPass(Request $request)
+    {
+        $receive = $request->all();
+        $tbuser = get_object_vars($receive['user']);
+        $currentuser = JWTAuth::user();
+
+        Tbuser::where('tuuserid', $tbuser['tuuserid'])
+            ->update(['tupass' => bcrypt('12345')]);
+
+        $message = "Password Reset to '12345'";
+        return ["message"=>$message];
+    }
 }
