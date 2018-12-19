@@ -140,6 +140,11 @@ class TbuserController extends BaseController
                 $message = "User Updated";
                 break;
             case "3":
+                $countTbiran = \DB::table('tbiran')->where('tiuserid', $tbuser['tuuserid'])->count();
+                if($countTbiran != 0) {
+                    return response()->json(['error' => 'Iuran Settled, cannot remove'], 422);
+                }
+
                 Tbuser::where('tuuserid', $tbuser['tuuserid'])->delete();
                 $message = "User Deleted";
                 break;
