@@ -16,19 +16,13 @@ class TbiranController extends BaseController
     {
         $month = Carbon::parse($request->date)->format('Ym');
 
-        $perPage = request()->has('per_page') ? (int) request()->per_page : null;
-        $pagination = Tbuser::select('tuuserid as tiuserid','tuuser','tuname','tuiran as tiiran')
+        $query = Tbuser::select('tuuserid as tiuserid','tuuser','tuname','tuiran as tiiran')
                             ->addSelect(DB::raw("'' as timont"))
                             ->whereNotIn('tuuserid', [1, 2])
                             ->where('tumont', '<=', $month)
-                            ->whereNotIn('tuuserid', Tbiran::where('timont', '=', $month)->pluck('tiuserid'))
-                            ->paginate($perPage);
+                            ->whereNotIn('tuuserid', Tbiran::where('timont', '=', $month)->pluck('tiuserid'));
         
-        $pagination->appends([
-            'sort' => request()->sort,
-            'filter' => request()->filter,
-            'per_page' => request()->per_page
-        ]);
+        $pagination = $query->paginate($query->count());
 
         return response()->json($pagination);
     }
@@ -37,18 +31,12 @@ class TbiranController extends BaseController
     {
         $month = Carbon::parse($request->date)->format('Ym');
 
-        $perPage = request()->has('per_page') ? (int) request()->per_page : null;
-        $pagination = Tbiran::select('tiiranid','tuuser','tuname','tiiran')
+        $query = Tbiran::select('tiiranid','tuuser','tuname','tiiran')
                             ->leftJoin('tbuser', 'tuuserid', '=', 'tiuserid')
                             ->whereNotIn('tuuserid', [1, 2])
-                            ->where('timont', '=', $month)
-                            ->paginate($perPage);
-        
-        $pagination->appends([
-            'sort' => request()->sort,
-            'filter' => request()->filter,
-            'per_page' => request()->per_page
-        ]);
+                            ->where('timont', '=', $month);
+
+        $pagination = $query->paginate($query->count());
 
         return response()->json($pagination);
     }
@@ -95,21 +83,16 @@ class TbiranController extends BaseController
             $yearquery = DB::table('temp_month');
         }
 
-        $perPage = request()->has('per_page') ? (int) request()->per_page : null;
-        $pagination = Tbiran::select('tiiranid','bln',DB::raw('(case when tiiranid is null then tuiran else tiiran end) As iuran'))
+        $query = Tbiran::select('tiiranid','bln',DB::raw('(case when tiiranid is null then tuiran else tiiran end) As iuran'))
                             ->rightJoinSub($yearquery, 'temp_month', function($join){
                                 $join->on('mnth','=','timont');
                                 $join->on('id','=','tiuserid');
                             })
                             ->leftJoin('tbuser', 'tuuserid', '=', 'id')
                             ->whereRaw('mnth >= tumont')
-                            ->paginate($perPage);
+                            ->whereRaw('mnth <= date_format(now(),"%Y%m")');
         
-        $pagination->appends([
-            'sort' => request()->sort,
-            'filter' => request()->filter,
-            'per_page' => request()->per_page
-        ]);
+        $pagination = $query->paginate($query->count());
 
         // var_dump(DB::getQueryLog());
 
