@@ -90,7 +90,8 @@ class TbiranController extends BaseController
                             })
                             ->leftJoin('tbuser', 'tuuserid', '=', 'id')
                             ->whereRaw('mnth >= tumont')
-                            ->whereRaw('mnth <= date_format(now(),"%Y%m")');
+                            ->whereRaw('left(mnth,4) <= date_format(now(),"%Y")');
+                            // ->whereRaw('mnth <= date_format(now(),"%Y%m")');
         
         $pagination = $query->paginate($query->count());
 

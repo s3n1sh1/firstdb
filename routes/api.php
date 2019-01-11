@@ -41,8 +41,10 @@ Route::group(['middleware' => ['jwt.auth','decrypt.data']], function() {
     Route::get('loadIuran', 'TbiranController@loadIuran');
     Route::get('loadSettle', 'TbiranController@loadSettle');
     Route::post('saveIuran', 'TbiranController@saveIuran');
-
     Route::get('loadRecord', 'TbiranController@loadRecord');
+
+    Route::get('loadNews', 'TbnewsController@loadNews');
+    Route::post('saveNews', 'TbnewsController@saveNews');
 });
 
 Route::group(['middleware' => 'jwt.refresh','decrypt.data'], function(){
