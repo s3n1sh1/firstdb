@@ -88,7 +88,7 @@ class TbuserController extends BaseController
 
     public function loadUser(Request $request)
     {
-        $query = Tbuser::whereNotIn('tuuserid', [1, 2]);
+        $query = Tbuser::whereNotIn('tuuserid', [1, 2, 3, 4, 5]);
         $pagination = $query->paginate($query->count());
 
         return response()->json($pagination);

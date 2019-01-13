@@ -18,7 +18,7 @@ class TbiranController extends BaseController
 
         $query = Tbuser::select('tuuserid as tiuserid','tuuser','tuname','tuiran as tiiran')
                             ->addSelect(DB::raw("'' as timont"))
-                            ->whereNotIn('tuuserid', [1, 2])
+                            ->whereNotIn('tuuserid', [1, 2, 3, 4, 5])
                             ->where('tumont', '<=', $month)
                             ->whereNotIn('tuuserid', Tbiran::where('timont', '=', $month)->pluck('tiuserid'));
         
@@ -33,7 +33,7 @@ class TbiranController extends BaseController
 
         $query = Tbiran::select('tiiranid','tuuser','tuname','tiiran')
                             ->leftJoin('tbuser', 'tuuserid', '=', 'tiuserid')
-                            ->whereNotIn('tuuserid', [1, 2])
+                            ->whereNotIn('tuuserid', [1, 2, 3, 4, 5])
                             ->where('timont', '=', $month);
 
         $pagination = $query->paginate($query->count());

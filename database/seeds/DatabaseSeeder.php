@@ -45,5 +45,56 @@ class DatabaseSeeder extends Seeder
             'tusrce' => 'Web',
             'tunote' => ''
         ]);
+
+        DB::table('tbuser')->insert([
+            'tuuserid' => 3,
+            'tuuser' => 'admin2',
+            'tupass' => bcrypt('admin123'),
+            'tuname' => 'Admin2',
+            'turemk' => '',
+            'turgid' => 'admin',
+            'turgdt' => Date("Y-m-d H:i:s"),
+            'tuchid' => 'admin',
+            'tuchdt' => Date("Y-m-d H:i:s"),
+            'tuchno' => 0,
+            'tudlfg' => '0',
+            'tudpfg' => '1',
+            'tusrce' => 'Web',
+            'tunote' => ''
+        ]);
+
+        DB::table('tbuser')->insert([
+            'tuuserid' => 4,
+            'tuuser' => 'admin3',
+            'tupass' => bcrypt('admin123'),
+            'tuname' => 'Admin3',
+            'turemk' => '',
+            'turgid' => 'admin',
+            'turgdt' => Date("Y-m-d H:i:s"),
+            'tuchid' => 'admin',
+            'tuchdt' => Date("Y-m-d H:i:s"),
+            'tuchno' => 0,
+            'tudlfg' => '0',
+            'tudpfg' => '1',
+            'tusrce' => 'Web',
+            'tunote' => ''
+        ]);
+
+        DB::table('tbuser')->insert([
+            'tuuserid' => 5,
+            'tuuser' => 'admin4',
+            'tupass' => bcrypt('admin123'),
+            'tuname' => 'Admin4',
+            'turemk' => '',
+            'turgid' => 'admin',
+            'turgdt' => Date("Y-m-d H:i:s"),
+            'tuchid' => 'admin',
+            'tuchdt' => Date("Y-m-d H:i:s"),
+            'tuchno' => 0,
+            'tudlfg' => '0',
+            'tudpfg' => '1',
+            'tusrce' => 'Web',
+            'tunote' => ''
+        ]);
     }
 }
